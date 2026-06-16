@@ -22,15 +22,16 @@ namespace NZWalks.API.Repositories
 
         public async Task<Region?> DeleteAsync(Guid id)
         {
-            var regiondomainMoels = await dbContext.Regions.FirstOrDefaultAsync(x=> x.Id == id);
-            if(regiondomainMoels == null)
+            var existingRegion = await dbContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (existingRegion == null)
             {
                 return null;
             }
-            dbContext.Regions.Remove(regiondomainMoels);
-            await dbContext.SaveChangesAsync();
 
-            return regiondomainMoels;
+            dbContext.Regions.Remove(existingRegion);
+            await dbContext.SaveChangesAsync();
+            return existingRegion;
         }
 
         public async Task<List<Region>> GetAllAsync()
@@ -45,17 +46,19 @@ namespace NZWalks.API.Repositories
 
         public async Task<Region?> UpdateAsync(Guid id, Region region)
         {
-            var existingVilla = await dbContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
-            if (existingVilla == null)
+            var existingRegion = await dbContext.Regions.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (existingRegion == null)
             {
                 return null;
             }
-            existingVilla.Code = region.Code;
-            existingVilla.Name = region.Name;
-            existingVilla.RegionImageUrl = region.RegionImageUrl;
+
+            existingRegion.Code = region.Code;
+            existingRegion.Name = region.Name;
+            existingRegion.RegionImageUrl = region.RegionImageUrl;
 
             await dbContext.SaveChangesAsync();
-            return existingVilla;
+            return existingRegion;
         }
     }
 }
